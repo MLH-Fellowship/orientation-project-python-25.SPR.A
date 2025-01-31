@@ -1,6 +1,6 @@
-"""
+'''
 Flask Application
-"""
+'''
 
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
@@ -34,17 +34,17 @@ data = {
 
 @app.route("/test")
 def hello_world():
-    """
+    '''
     Returns a JSON test message
-    """
+    '''
     return jsonify({"message": "Hello, World!"})
 
 
 @app.route("/resume/experience", methods=["GET", "POST"])
 def experience():
-    """
+    '''
     Handle experience requests
-    """
+    '''
     if request.method == "GET":
         return jsonify()
 
@@ -56,9 +56,9 @@ def experience():
 
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
-    """
+    '''
     Handles education requests
-    """
+    '''
     if request.method == "GET":
         return jsonify({})
 
@@ -70,9 +70,9 @@ def education():
 
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
-    """
+    '''
     Handles Skill requests
-    """
+    '''
     if request.method == "GET":
         return jsonify({})
 
