@@ -55,6 +55,7 @@ def experience(index=None):
                 return jsonify(data["experience"][index])
             except IndexError:
                 return jsonify({"error": "Experience not found"}), 404
+        return jsonify(data["experience"])
 
     if request.method == "POST":
         return jsonify({})
