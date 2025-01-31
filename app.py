@@ -92,9 +92,11 @@ def skill():
             return jsonify(
                 {"id": len(data["skill"]) - 1, "skill": new_skill.__dict__}
             ), 201
-        
+
         except KeyError:
             return jsonify({"error": "Invalid request"}), 400
-            
+
         except TypeError as e:
             return jsonify({"error": str(e)}), 400
+
+    return jsonify({})
