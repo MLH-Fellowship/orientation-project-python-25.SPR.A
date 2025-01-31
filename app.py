@@ -88,9 +88,9 @@ def skill():
 
             data["skill"].append(new_skill)
 
-            # return the new skill and its ID
+            # return ID of new skill
             return jsonify(
-                {"id": len(data["skill"]) - 1, "skill": new_skill.__dict__}
+                {"id": len(data["skill"]) - 1}
             ), 201
 
         except KeyError:
