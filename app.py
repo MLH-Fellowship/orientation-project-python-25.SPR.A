@@ -78,3 +78,13 @@ def skill():
         return jsonify({})
 
     return jsonify({})
+
+@app.route('/resume/skill/<int:id>', methods=['GET'])
+def get_skill(id):
+    '''
+    Get a specific skill
+    '''
+    try:
+        return jsonify(data["skill"][id].__dict__)
+    except IndexError:
+        return jsonify({"error": "Skill not found"}), 404
