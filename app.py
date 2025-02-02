@@ -58,8 +58,8 @@ def education(index=None):
     '''
     GET /resume/education/<int:index> - Returns the education at the given index
     '''
-    if request.method == 'GET':
-        if index is None or index < 0: 
+    if request.method == 'GET' and index is not None:
+        if index < 0: 
             return jsonify({"error": "Index must be a positive integer"})
         
         try:
