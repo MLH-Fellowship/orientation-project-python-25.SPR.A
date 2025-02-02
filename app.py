@@ -53,12 +53,19 @@ def experience():
     return jsonify({})
 
 @app.route('/resume/education', methods=['GET', 'POST'])
-def education():
+@app.route("/resume/education/<int:index>", methods=["GET"])
+def education(index=None):
     '''
-    Handles education requests
+    GET /resume/experience/<int:index> - Returns the experience at the given index
     '''
     if request.method == 'GET':
-        return jsonify({})
+        if index is None or index < 0: 
+            return jsonify({"error": "Index must be a positive integer"})
+        
+        try:
+            return jsonify(data["education"][index])
+        except IndexError:
+            return jsonify({"error": "Index out of range"})
 
     if request.method == 'POST':
         return jsonify({})
