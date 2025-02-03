@@ -3,7 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-
+from validation import validate_experience, validate_education, validate_skill
 app = Flask(__name__)
 
 data = {
@@ -48,7 +48,12 @@ def experience():
         return jsonify()
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        try:
+            validated_data = validate_experience(json_data)
+            return jsonify(validated_data)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
     return jsonify({})
 
@@ -61,7 +66,12 @@ def education():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        try:
+            validated_data = validate_education(json_data)
+            return jsonify(validated_data)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
     return jsonify({})
 
@@ -75,6 +85,11 @@ def skill():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        try:
+            validated_data = validate_skill(json_data)
+            return jsonify(validated_data)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
     return jsonify({})
