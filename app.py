@@ -3,7 +3,7 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-
+from gpt_connection import get_improvement
 app = Flask(__name__)
 
 data = {
@@ -21,7 +21,8 @@ data = {
                   "September 2019",
                   "July 2022",
                   "80%",
-                  "example-logo.png")
+                  "example-logo.png",
+                  "I was head of the debate team at university")
     ],
     "skill": [
         Skill("Python",
@@ -65,6 +66,23 @@ def education():
 
     return jsonify({})
 
+@app.route('/resume/reword_description', methods=['GET'])
+def reword_description():
+    '''
+    Rewords the description using GPT
+    '''
+    model = None
+    try:
+        model = Experience(**request.json)
+    except:
+        model = Education(**request.json)
+
+    if model is None:
+        return jsonify({"error": "Invalid request"}), 400
+
+    response = get_improvement(model)
+    
+    return jsonify({"response": response})
 
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
