@@ -3,7 +3,6 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
-
 app = Flask(__name__)
 
 data = {
@@ -48,7 +47,11 @@ def experience():
         return jsonify()
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        if json_data['spell_check']:
+            json_data = spell_check_json(json_data)
+
+        return jsonify(json_data)
 
     return jsonify({})
 
@@ -61,7 +64,11 @@ def education():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        if json_data['spell_check']:
+            json_data = spell_check_json(json_data)
+
+        return jsonify(json_data)
 
     return jsonify({})
 
@@ -75,6 +82,10 @@ def skill():
         return jsonify({})
 
     if request.method == 'POST':
-        return jsonify({})
+        json_data = request.json
+        if json_data['spell_check']:
+            json_data = spell_check_json(json_data)
+
+        return jsonify(json_data)
 
     return jsonify({})
