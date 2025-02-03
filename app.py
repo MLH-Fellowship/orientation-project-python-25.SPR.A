@@ -48,8 +48,8 @@ def experience():
 
     if request.method == 'POST':
         json_data = request.json
-        if json_data['spell_check']:
-            json_data = spell_check_json(json_data)
+        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
+            json_data['description'] = spell_check(json_data['description'])
 
         return jsonify(json_data)
 
@@ -65,9 +65,8 @@ def education():
 
     if request.method == 'POST':
         json_data = request.json
-        if json_data['spell_check']:
-            json_data = spell_check_json(json_data)
-
+        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
+            json_data['description'] = spell_check(json_data['description'])
         return jsonify(json_data)
 
     return jsonify({})
@@ -83,8 +82,8 @@ def skill():
 
     if request.method == 'POST':
         json_data = request.json
-        if json_data['spell_check']:
-            json_data = spell_check_json(json_data)
+        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
+            json_data['description'] = spell_check(json_data['description'])
 
         return jsonify(json_data)
 
