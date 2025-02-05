@@ -50,11 +50,6 @@ def experience(index=None):
     POST: Creates a new experience
     """
     if request.method == "GET":
-        if index is not None:
-            try:
-                return jsonify(data["experience"][index])
-            except IndexError:
-                return jsonify({"error": "Experience not found"}), 404
         return jsonify(data["experience"])
 
     if request.method == "POST":
