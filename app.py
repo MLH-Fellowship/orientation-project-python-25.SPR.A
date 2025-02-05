@@ -48,14 +48,19 @@ def experience():
     if request.method == 'GET':
         return jsonify()
 
-    if request.method == 'POST':
-        json_data = request.json
-        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
-            json_data['description'] = spell_check(json_data['description'])
+    if request.method == 'POST':    
+        return jsonify({})
 
-        return jsonify(json_data)
 
-    return jsonify({})
+@app.route('/resume/spell_check', methods=['POST'])
+def spell_check():
+    json_data = request.json
+    if json_data.get('description') and isinstance(json_data.get('description'), str):
+        json_data['description'] = spell_check(json_data['description'])
+    return jsonify({
+        "before": request.json,
+        "after": json_data
+    })
 
 @app.route('/resume/education', methods=['GET', 'POST'])
 def education():
@@ -66,13 +71,7 @@ def education():
         return jsonify({})
 
     if request.method == 'POST':
-        json_data = request.json
-        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
-            json_data['description'] = spell_check(json_data['description'])
-        return jsonify(json_data)
-
-    return jsonify({})
-
+        return jsonify({})
 
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
@@ -83,10 +82,4 @@ def skill():
         return jsonify({})
 
     if request.method == 'POST':
-        json_data = request.json
-        if json_data.get('spell_check') and isinstance(json_data.get('description'), str):
-            json_data['description'] = spell_check(json_data['description'])
-
-        return jsonify(json_data)
-
-    return jsonify({})
+        return jsonify({})
