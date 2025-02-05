@@ -34,6 +34,34 @@ def test_experience():
     assert response.json[item_id] == example_experience
 
 
+
+# def test_delete_experience():
+
+#     example_experience = {
+#         "title": "Mechanic",
+#         "company": "Decepticons .Ent",
+#         "start_date": "January 2020",
+#         "end_date": "Present",
+#         "description": "Hail Megatron",
+#         "logo" : "example-log.png"
+#     }
+#     response = app.test_client().post('/resume/experience', json= example_experience)
+#     assert response.status_code == 200
+    
+#     get_all_experiences = app.test_client().get('/resume/experience')
+#     experience_id = len(get_all_experiences.json) - 1
+
+#     delete_response = app.test_client().delete(f'/resume/experience/{experience_id}')
+#     assert delete_response.status_code == 200
+#     deleted_experience = delete_response.json['deleted_experience']
+
+#     assert example_experience == deleted_experience
+
+#     get_exp = app.test_client().get('/resume/experience')
+#     for experience in get_exp.json:
+#         assert experience != deleted_experience
+
+
 def test_education():
     '''
     Add a new education and then get all educations. 
