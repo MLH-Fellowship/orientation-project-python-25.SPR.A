@@ -58,9 +58,33 @@ def experience(index=None):
         return jsonify(data["experience"]), 200
 
     if request.method == "POST":
-        return jsonify({})
+        try:
+            new_experience = request.get_json()
+            if not new_experience:
+                return jsonify({"error": "No data provided"}), 400
+            # validate required fields
+            required_fields = [
+                "title",
+                "company",
+                "start_date",
+                "end_date",
+                "description",
+                "logo",
+            ]
+            if not all(field in new_experience for field in required_fields):
+                return jsonify({"error": "Missing required fields"}), 400
 
-    return jsonify()
+            experience_obj = Experience(**new_experience)
+            data["experience"].append(experience_obj)
+            return jsonify({"id": len(data["experience"]) - 1}), 201
+
+        except TypeError as e:
+            return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
+        except Exception as e:
+            return jsonify({"error": f"Internal error: {str(e)}"}), 500
+
+
+    return jsonify({"error": "Method not allowed"}), 405
 
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
