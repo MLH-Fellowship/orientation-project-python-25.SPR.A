@@ -81,7 +81,7 @@ def experience(index=None):
         except TypeError as e:
             return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
         except Exception as e:
-            return jsonify({"error": f"Server error: {str(e)}"}), 500
+            return jsonify({"error": f"Internal error: {str(e)}"}), 500
 
     return jsonify({"error": "Method not allowed"}), 405
 
