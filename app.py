@@ -55,12 +55,12 @@ def experience(index=None):
                 return jsonify(data["experience"][index])
             except IndexError:
                 return jsonify({"error": "Experience not found"}), 404
+        return jsonify(data["experience"]), 200
 
     if request.method == "POST":
         return jsonify({})
 
     return jsonify()
-
 
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
