@@ -108,7 +108,37 @@ def skill():
     if request.method == "GET":
         return jsonify({})
 
-    if request.method == "POST":
-        return jsonify({})
+    if request.method == 'POST':
+        json_data = request.json
+        try:
+            # extract the data from the request
+            name = json_data["name"]
+            proficiency = json_data["proficiency"]
+            logo = json_data["logo"]
+
+            new_skill = Skill(name, proficiency, logo)
+
+            data["skill"].append(new_skill)
+
+            # return ID of new skill
+            return jsonify(
+                {"id": len(data["skill"]) - 1}
+            ), 201
+
+        except KeyError:
+            return jsonify({"error": "Invalid request"}), 400
+
+        except TypeError as e:
+            return jsonify({"error": str(e)}), 400
 
     return jsonify({})
+
+@app.route('/resume/skill/<int:skill_id>', methods=['GET'])
+def get_skill(skill_id):
+    '''
+    Get a specific skill
+    '''
+    try:
+        return jsonify(data["skill"][skill_id].__dict__)
+    except IndexError:
+        return jsonify({"error": "Skill not found"}), 404
