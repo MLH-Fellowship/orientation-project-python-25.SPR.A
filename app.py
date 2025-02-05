@@ -3,6 +3,8 @@ Flask Application
 '''
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from spell_check import spell_check
+
 app = Flask(__name__)
 
 data = {
