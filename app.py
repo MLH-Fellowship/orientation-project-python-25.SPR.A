@@ -81,6 +81,8 @@ def reword_description():
         return jsonify({"error": "Invalid request"}), 400
 
     response = get_improvement(model)
+    if response is None:
+        return jsonify({"error": "Failed to get improvement"}), 500
     
     return jsonify({"response": response})
 

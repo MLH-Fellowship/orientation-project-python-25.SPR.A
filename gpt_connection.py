@@ -22,8 +22,10 @@ def get_improvement(model : Experience | Education):
             {"role": "user", "content": prompt},
         ]
     )
-
-    return response.choices[0].message.content
+    try:
+        return response.choices[0].message.content
+    except:
+        return None
 
 
 
