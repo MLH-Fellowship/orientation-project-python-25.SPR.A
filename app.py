@@ -85,7 +85,6 @@ def experience(index=None):
 
     return jsonify({"error": "Method not allowed"}), 405
 
-
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
     """
