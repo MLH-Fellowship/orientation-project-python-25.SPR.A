@@ -1,6 +1,6 @@
-"""
+'''
 Flask Application
-"""
+'''
 
 from flask import Flask, jsonify, request
 
@@ -35,27 +35,27 @@ data = {
 
 @app.route("/test")
 def hello_world():
-    """
+    '''
     Returns a JSON test message
-    """
+    '''
     return jsonify({"message": "Hello, World!"})
 
 
 @app.route("/resume/experience", methods=["GET", "POST"])
 @app.route("/resume/experience/<int:index>", methods=["GET"])
 def experience(index=None):
-    """
+    '''
     Handle experience requests
     GET: Returns all experiences or a specific experience by index
     POST: Creates a new experience
-    """
+    '''
     if request.method == "GET":
         if index is not None:
             try:
                 return jsonify(data["experience"][index])
             except IndexError:
                 return jsonify({"error": "Experience not found"}), 404
-        return jsonify(data["experience"])
+        return jsonify(data["experience"]), 200
 
     if request.method == "POST":
         try:
@@ -83,13 +83,14 @@ def experience(index=None):
         except Exception as e:
             return jsonify({"error": f"Internal error: {str(e)}"}), 500
 
+
     return jsonify({"error": "Method not allowed"}), 405
 
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
-    """
+    '''
     Handles education requests
-    """
+    '''
     if request.method == "GET":
         return jsonify({})
 
@@ -101,11 +102,11 @@ def education():
 
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
-    """
+    '''
     Handles Skill requests
-    """
-    if request.method == "GET":
-        return jsonify({})
+    '''
+    if request.method == 'GET':
+        return jsonify([skill.__dict__ for skill in data["skill"]]), 200
 
     if request.method == 'POST':
         json_data = request.json
