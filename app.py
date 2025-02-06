@@ -90,10 +90,10 @@ def experience(index=None):
 @app.route("/resume/education/<int:index>", methods=["GET"])
 def education(index=None):
     '''
-    GET /resume/experience/<int:index> - Returns the experience at the given index
+    GET /resume/education/<int:index> - Returns the education at the given index
     '''
-    if request.method == 'GET':
-        if index is None or index < 0: 
+    if request.method == 'GET' and index is not None:
+        if index < 0: 
             return jsonify({"error": "Index must be a positive integer"})
         
         try:
