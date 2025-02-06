@@ -80,6 +80,19 @@ def education():
 
     return jsonify({})
 
+# Handles the deletion of an existing education
+@app.route('/resume/education/<int:edu_id>', methods=['DELETE'])
+def delete_education(edu_id):
+    try:
+        if edu_id < 0 or edu_id >= len(data["education"]):
+            return jsonify({"message": "Resource doesn't exist"}), 404
+        else:
+            del data['education'][edu_id]
+            return jsonify({"message": "Education Successfully Deleted"}), 200
+    except Exception as e:
+        print(f"Error :{e} ")
+        return jsonify({"error": "An error occured"}), 500
+
 
 @app.route('/resume/skill', methods=['GET', 'POST'])
 def skill():
