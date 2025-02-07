@@ -4,6 +4,7 @@ Flask Application
 
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from gpt_connection import get_improvement
 from validation import validate_experience, validate_education, validate_skill
 from spell_check import spell_check
 
@@ -21,14 +22,13 @@ data = {
         )
     ],
     "education": [
-        Education(
-            "Computer Science",
-            "University of Tech",
-            "September 2019",
-            "July 2022",
-            "80%",
-            "example-logo.png",
-        )
+        Education("Computer Science",
+                  "University of Tech",
+                  "September 2019",
+                  "July 2022",
+                  "80%",
+                  "example-logo.png",
+                  "I was head of the debate team at university")
     ],
     "skill": [Skill("Python", "1-2 Years", "example-logo.png")],
 }
@@ -102,6 +102,25 @@ def education():
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 
+@app.route('/resume/reword_description', methods=['GET'])
+def reword_description():
+    '''
+    Rewords the description using GPT
+    '''
+    model = None
+    try:
+        model = Experience(**request.json)
+    except:
+        model = Education(**request.json)
+
+    if model is None:
+        return jsonify({"error": "Invalid request"}), 400
+
+    response = get_improvement(model)
+    if response is None:
+        return jsonify({"error": "Failed to get improvement"}), 500
+    
+    return jsonify({"response": response})
 
 @app.route("/resume/skill", methods=["GET", "POST"])
 def skill():
