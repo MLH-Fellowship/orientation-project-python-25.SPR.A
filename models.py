@@ -5,6 +5,7 @@ Models for the Resume API. Each class is related to
 '''
 
 from dataclasses import dataclass
+import json
 
 
 @dataclass
@@ -19,6 +20,11 @@ class Experience:
     description: str
     logo: str
 
+    def model_dump_json(self):
+        '''
+        Dumps the class into a JSON string
+        '''
+        return json.dumps(self, default=lambda o: o.__dict__)
 
 @dataclass
 class Education:
@@ -31,6 +37,13 @@ class Education:
     end_date: str
     grade: str
     logo: str
+    description: str
+
+    def model_dump_json(self):
+        '''
+        Dumps the class into a JSON string
+        '''
+        return json.dumps(self, default=lambda o: o.__dict__)
 
 
 @dataclass
