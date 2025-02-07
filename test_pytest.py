@@ -3,7 +3,7 @@ Tests in Pytest
 '''
 from app import app
 
-
+ 
 def test_client():
     '''
     Makes a request and checks the message received is the same
@@ -111,5 +111,25 @@ def test_model_validation():
     assert response_education.status_code == 200
     assert response_experience.status_code == 200
     assert response_skill.status_code == 200
-
     
+def test_spell_check():
+    '''
+    Test that the spell check endpoint returns a valid response
+    '''
+
+    example_education = {
+        "course": "Engineering",
+        "school": "NYU",
+        "start_date": "October 2022",
+        "end_date": "August 2024",
+        "grade": "86%",
+        "logo": "example-logo.png",
+        "description": "I was head of the debaite team at university",
+        "spell_check": True
+    }
+
+    response = app.test_client().post('/resume/education',
+                                     json=example_education)
+    
+    assert response.json['description'] == "I was head of the debate team at university"
+

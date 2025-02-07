@@ -5,6 +5,7 @@ Flask Application
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
 from validation import validate_experience, validate_education, validate_skill
+from spell_check import spell_check
 
 app = Flask(__name__)
 
@@ -65,7 +66,7 @@ def experience(index=None):
             data["experience"].append(validated_data)
             return jsonify({"id": len(data["experience"]) - 1}), 201
 
-        except TypeError as e:
+        except (ValueError, TypeError, KeyError) as e:
             return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
         except Exception as e:
             return jsonify({"error": f"Internal error: {str(e)}"}), 500
@@ -73,6 +74,17 @@ def experience(index=None):
 
     return jsonify({"error": "Method not allowed"}), 405
 
+
+@app.route('/resume/spell_check', methods=['POST'])
+def spell_check():
+    json_data = request.json
+    if json_data.get('description') and isinstance(json_data.get('description'), str):
+        json_data['description'] = spell_check(json_data['description'])
+    return jsonify({
+        "before": request.json,
+        "after": json_data
+    })
+  
 @app.route("/resume/education", methods=["GET", "POST"])
 def education():
     '''
@@ -89,8 +101,6 @@ def education():
             return jsonify(validated_data)
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
-
-    return jsonify({})
 
 
 @app.route("/resume/skill", methods=["GET", "POST"])
@@ -113,11 +123,8 @@ def skill():
                 {"id": len(data["skill"]) - 1}
             ), 201
 
-        except KeyError:
-            return jsonify({"error": "Invalid request"}), 400
-
-        except TypeError as e:
-            return jsonify({"error": str(e)}), 400
+        except (ValueError, TypeError, KeyError) as e:
+            return jsonify({"error": f"Invalid request: {str(e)}"}), 400
 
     return jsonify({})
 
