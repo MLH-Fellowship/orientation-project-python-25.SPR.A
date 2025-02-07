@@ -79,7 +79,7 @@ def experience(index=None):
             data["experience"].append(experience_obj)
             return jsonify({"id": len(data["experience"]) - 1}), 201
 
-        except TypeError as e:
+        except (ValueError, TypeError, KeyError) as e:
             return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
         except Exception as e:
             return jsonify({"error": f"Internal error: {str(e)}"}), 500
@@ -138,11 +138,8 @@ def skill():
                 {"id": len(data["skill"]) - 1}
             ), 201
 
-        except KeyError:
-            return jsonify({"error": "Invalid request"}), 400
-
-        except TypeError as e:
-            return jsonify({"error": str(e)}), 400
+        except (ValueError, TypeError, KeyError) as e:
+            return jsonify({"error": f"Invalid request: {str(e)}"}), 400
 
     return jsonify({})
 

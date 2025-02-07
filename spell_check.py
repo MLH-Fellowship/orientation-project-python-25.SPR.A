@@ -1,3 +1,7 @@
+"""
+Module for spell checking functionality using autocorrect library.
+"""
+
 from autocorrect import Speller
 
 spell = Speller(lang='en')
