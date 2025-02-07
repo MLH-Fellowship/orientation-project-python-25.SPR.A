@@ -52,19 +52,17 @@ def experience():
 
     return jsonify({})
 
-# Handles deletion of experience
 @app.route('/resume/experience/<int:exp_id>', methods=['DELETE'])
 def delete_experience(exp_id):
     try:
         if exp_id < 0 or exp_id >= len(data["experience"]):
             return jsonify({"message": "Resource doesn't exist"}), 404
         else:
-            deleted_exp = data['experience'].pop(exp_id)
-            # return jsonify({"message": "Experience Successfully Deleted", "deleted_experience": deleted_exp}), 200
+            data['experience'].pop(exp_id)
             return jsonify({"message": "Experience Successfully Deleted"}), 200
     except Exception as e:
         print(f"Error :{e} ")
-        return jsonify({"error": "An error occured"}), 500
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
     
 
 @app.route('/resume/education', methods=['GET', 'POST'])
@@ -94,18 +92,13 @@ def skill():
 
     return jsonify({})
 
-# Handles the deletion of Skills
 @app.route('/resume/skill/<int:skill_id>', methods=['DELETE'])
 def delete_skill(skill_id):
     try:
         if skill_id < 0 or skill_id >= len(data["skill"]):
             return jsonify({"message": "Resource doesn't exist"}), 404
-        else:
-            # skill_to_delete = data['skill'][skill_id];
-            #data["skill"].remove(skill_to_delete);
-
+        else:   
             del data['skill'][skill_id]
             return jsonify({"message": "Skill Successfully Deleted"}), 200
-    except Exception as e:
-        print(f"Error: {e} ")
-        return jsonify({"error": "An error occurred"}), 500
+    except Exception as e:      
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
