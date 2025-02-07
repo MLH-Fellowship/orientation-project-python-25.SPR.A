@@ -100,3 +100,6 @@ def test_skill():
 
     response = app.test_client().get('/resume/skill')
     assert response.json[item_id] == example_skill
+
+    response = app.test_client().get(f'/resume/skill/{item_id}')
+    assert response.json == example_skill
