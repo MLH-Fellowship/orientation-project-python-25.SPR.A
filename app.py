@@ -98,10 +98,14 @@ def education():
         json_data = request.json
         try:
             validated_data = validate_education(json_data)
-            return jsonify(validated_data)
-        except ValueError as e:
-            return jsonify({"error": str(e)}), 400
-
+            data["education"].append(validated_data)
+            
+            return jsonify({"id": len(data["education"]) - 1}), 201
+        except (ValueError, TypeError, KeyError) as e:
+            return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
+        except Exception as e:
+            return jsonify({"error": f"Internal error: {str(e)}"}), 500
+        
 @app.route('/resume/reword_description', methods=['GET'])
 def reword_description():
     '''
