@@ -77,25 +77,6 @@ def experience(index=None):
             experience_obj = Experience(**new_experience)
             data["experience"].append(experience_obj)
             return jsonify({"id": len(data["experience"]) - 1}), 201
-
-
-# Handles deletion of experience
-@app.route('/resume/experience/<int:exp_id>', methods=['DELETE'])
-def delete_experience(exp_id):
-    try:
-        if exp_id < 0 or exp_id >= len(data["experience"]):
-            return jsonify({"message": "Resource doesn't exist"}), 404
-        else:
-            deleted_exp = data['experience'].pop(exp_id)
-           # return jsonify({"message": "Experience Successfully Deleted", "deleted_experience": deleted_exp}), 200
-             return jsonify({"message": "Experience Successfully Deleted"}), 200
-    except Exception as e:
-        print(f"Error :{e} ")
-        return jsonify({"error": "An error occured"}), 500
-    
-
-@app.route('/resume/education', methods=['GET', 'POST'])
-
         except TypeError as e:
             return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
         except Exception as e:
@@ -103,6 +84,19 @@ def delete_experience(exp_id):
 
 
     return jsonify({"error": "Method not allowed"}), 405
+
+
+@app.route('/resume/experience/<int:exp_id>', methods=['DELETE'])
+def delete_experience(exp_id):
+    try:
+        if exp_id < 0 or exp_id >= len(data["experience"]):
+            return jsonify({"message": "Resource doesn't exist"}), 404
+        else:
+            data['experience'].pop(exp_id)
+            return jsonify({"message": "Experience Successfully Deleted"}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    
 
 @app.route("/resume/education", methods=["GET", "POST"])
 
