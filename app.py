@@ -4,6 +4,7 @@ Flask Application
 
 from flask import Flask, jsonify, request
 from models import Experience, Education, Skill
+from validation import validate_experience, validate_education, validate_skill
 from spell_check import spell_check
 
 app = Flask(__name__)
@@ -57,26 +58,12 @@ def experience(index=None):
                 return jsonify({"error": "Experience not found"}), 404
         return jsonify(data["experience"]), 200
 
-
-    if request.method == "POST":
+    if request.method == 'POST':
+        json_data = request.json
         try:
-            new_experience = request.get_json()
-            if not new_experience:
-                return jsonify({"error": "No data provided"}), 400
-            # validate required fields
-            required_fields = [
-                "title",
-                "company",
-                "start_date",
-                "end_date",
-                "description",
-                "logo",
-            ]
-            if not all(field in new_experience for field in required_fields):
-                return jsonify({"error": "Missing required fields"}), 400
-
-            experience_obj = Experience(**new_experience)
-            data["experience"].append(experience_obj)
+            validated_data = validate_experience(json_data)
+            
+            data["experience"].append(validated_data)
             return jsonify({"id": len(data["experience"]) - 1}), 201
 
         except (ValueError, TypeError, KeyError) as e:
@@ -103,14 +90,17 @@ def education():
     '''
     Handles education requests
     '''
-    if request.method == "GET":
-        return jsonify({})
     
     if request.method == 'GET':
         return jsonify(data['education']), 200
 
-    if request.method == "POST":
-        return jsonify({})
+    if request.method == 'POST':
+        json_data = request.json
+        try:
+            validated_data = validate_education(json_data)
+            return jsonify(validated_data)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
 
 @app.route("/resume/skill", methods=["GET", "POST"])
@@ -124,14 +114,9 @@ def skill():
     if request.method == 'POST':
         json_data = request.json
         try:
-            # extract the data from the request
-            name = json_data["name"]
-            proficiency = json_data["proficiency"]
-            logo = json_data["logo"]
+            validated_data = validate_skill(json_data)
 
-            new_skill = Skill(name, proficiency, logo)
-
-            data["skill"].append(new_skill)
+            data["skill"].append(validated_data)
 
             # return ID of new skill
             return jsonify(
