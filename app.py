@@ -86,14 +86,20 @@ def spell_check():
     })
   
 @app.route("/resume/education", methods=["GET", "POST"])
-def education():
+@app.route("/resume/education/<int:index>", methods=["GET"])
+def education(index=None):
     '''
-    Handles education requests
+    GET /resume/education/<int:index> - Returns the education at the given index
     '''
-    
-    if request.method == 'GET':
-        return jsonify(data['education']), 200
-
+    if request.method == 'GET' and index is not None:
+        if index < 0: 
+            return jsonify({"error": "Index must be a positive integer"})
+        
+        try:
+            return jsonify(data["education"][index])
+        except IndexError:
+            return jsonify({"error": "Index out of range"})
+        
     if request.method == 'POST':
         json_data = request.json
         try:
@@ -101,6 +107,8 @@ def education():
             return jsonify(validated_data)
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
+        
+    return jsonify({})
 
 @app.route('/resume/reword_description', methods=['GET'])
 def reword_description():
