@@ -94,7 +94,6 @@ def delete_experience(exp_id):
             data['experience'].pop(exp_id)
             return jsonify({"message": "Experience Successfully Deleted"}), 200
     except Exception as e:
-        print(f"Error :{e} ")
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
     
 
