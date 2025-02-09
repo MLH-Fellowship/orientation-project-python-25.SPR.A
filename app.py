@@ -42,7 +42,7 @@ def hello_world():
 
 
 @app.route("/resume/experience", methods=["GET", "POST"])
-@app.route("/resume/experience/<int:index>", methods=["GET"])
+@app.route("/resume/experience/<int:index>", methods=["GET", "DELETE"])
 def experience(index=None):
     '''
     Handle experience requests
@@ -82,21 +82,19 @@ def experience(index=None):
         except Exception as e:
             return jsonify({"error": f"Internal error: {str(e)}"}), 500
 
+    if request.method == "DELETE":
+        try:
+            if index is None or index < 0 or index >= len(data["experience"]):
+                return jsonify({"message": "Resource doesn't exist"}), 404
+            else:
+                data['experience'].pop(index)
+                return jsonify({"message": "Experience Successfully Deleted"}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({"error": "Method not allowed"}), 405
 
 
-@app.route('/resume/experience/<int:exp_id>', methods=['DELETE'])
-def delete_experience(exp_id):
-    try:
-        if exp_id < 0 or exp_id >= len(data["experience"]):
-            return jsonify({"message": "Resource doesn't exist"}), 404
-        else:
-            data['experience'].pop(exp_id)
-            return jsonify({"message": "Experience Successfully Deleted"}), 200
-    except Exception as e:
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-    
 
 @app.route("/resume/education", methods=["GET", "POST"])
 
