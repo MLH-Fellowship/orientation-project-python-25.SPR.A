@@ -154,7 +154,6 @@ def skill(skill_id = None):
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({})
-
       
 @app.route('/resume/skill/<int:skill_id>', methods=['GET'])
 def get_skill(skill_id):
