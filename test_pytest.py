@@ -34,6 +34,7 @@ def test_experience():
     assert response.json[item_id] == example_experience
 
 
+
 def test_education():
     '''
     Add a new education and then get all educations. 
@@ -69,6 +70,10 @@ def test_skill():
 
     item_id = app.test_client().post('/resume/skill',
                                      json=example_skill).json['id']
+
+
+    response = app.test_client().get('/resume/skill')
+    assert response.json[item_id] == example_skill
 
     response = app.test_client().get(f'/resume/skill/{item_id}')
     assert response.json == example_skill
@@ -132,4 +137,5 @@ def test_spell_check():
                                      json=example_education)
     
     assert response.json['description'] == "I was head of the debate team at university"
+
 

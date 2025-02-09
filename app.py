@@ -43,7 +43,7 @@ def hello_world():
 
 
 @app.route("/resume/experience", methods=["GET", "POST"])
-@app.route("/resume/experience/<int:index>", methods=["GET"])
+@app.route("/resume/experience/<int:index>", methods=["GET", "DELETE"])
 def experience(index=None):
     '''
     Handle experience requests
@@ -65,15 +65,22 @@ def experience(index=None):
             
             data["experience"].append(validated_data)
             return jsonify({"id": len(data["experience"]) - 1}), 201
-
-        except (ValueError, TypeError, KeyError) as e:
+        except TypeError as e:
             return jsonify({"error": f"Invalid data format: {str(e)}"}), 400
         except Exception as e:
             return jsonify({"error": f"Internal error: {str(e)}"}), 500
 
+    if request.method == "DELETE":
+        try:
+            if index is None or index < 0 or index >= len(data["experience"]):
+                return jsonify({"message": "Resource doesn't exist"}), 404
+            else:
+                data['experience'].pop(index)
+                return jsonify({"message": "Experience Successfully Deleted"}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
     return jsonify({"error": "Method not allowed"}), 405
-
 
 @app.route('/resume/spell_check', methods=['POST'])
 def spell_check():
@@ -86,28 +93,30 @@ def spell_check():
     })
   
 @app.route("/resume/education", methods=["GET", "POST"])
-@app.route("/resume/education/<int:index>", methods=["GET"])
-def education(index=None):
+@app.route("/resume/education/<int:edu_id>", methods=["GET", "DELETE"])
+def education(edu_id=None):
     '''
-    GET /resume/education/<int:index> - Returns the education at the given index
+    Handles education requests
+    GET: Returns all educations (unimplemented here)
+    POST: Creates a new education (unimplemented here)
+    DELETE: Deletes an education by index
     '''
-    if request.method == 'GET' and index is not None:
-        if index < 0: 
-            return jsonify({"error": "Index must be a positive integer"})
-        
+    if request.method == "GET":
+        return jsonify({})
+
+    if request.method == "POST":
+        return jsonify({})
+
+    if request.method == "DELETE":
         try:
-            return jsonify(data["education"][index])
-        except IndexError:
-            return jsonify({"error": "Index out of range"})
-        
-    if request.method == 'POST':
-        json_data = request.json
-        try:
-            validated_data = validate_education(json_data)
-            return jsonify(validated_data)
-        except ValueError as e:
-            return jsonify({"error": str(e)}), 400
-        
+            if edu_id is None or edu_id < 0 or edu_id >= len(data["education"]):
+                return jsonify({"message": "Resource doesn't exist"}), 404
+            else:
+                del data["education"][edu_id]
+                return jsonify({"message": "Education Successfully Deleted"}), 200
+        except Exception as e:
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
     return jsonify({})
 
 @app.route('/resume/reword_description', methods=['GET'])
