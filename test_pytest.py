@@ -34,7 +34,6 @@ def test_experience():
     assert response.json[item_id] == example_experience
 
 
-
 def test_education():
     '''
     Add a new education and then get all educations. 

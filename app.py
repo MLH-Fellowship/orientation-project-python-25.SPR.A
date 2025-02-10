@@ -75,12 +75,13 @@ def experience(index=None):
             if index is None or index < 0 or index >= len(data["experience"]):
                 return jsonify({"message": "Resource doesn't exist"}), 404
             else:
-                data['experience'].pop(index)
+                data["experience"].pop(index)
                 return jsonify({"message": "Experience Successfully Deleted"}), 200
         except Exception as e:
-            return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+            return jsonify({"error": f"An error occurred: {str(e)}"}), 500  
 
     return jsonify({"error": "Method not allowed"}), 405
+
 
 @app.route('/resume/spell_check', methods=['POST'])
 def spell_check():
@@ -91,7 +92,7 @@ def spell_check():
         "before": request.json,
         "after": json_data
     })
-  
+
 @app.route("/resume/education", methods=["GET", "POST"])
 @app.route("/resume/education/<int:edu_id>", methods=["GET", "DELETE"])
 def education(edu_id=None):
@@ -164,6 +165,18 @@ def skill():
 
     return jsonify({})
 
+
+@app.route('/resume/skill/<int:skill_id>', methods=['DELETE'])
+def delete_skill(skill_id):
+    try:
+        if skill_id < 0 or skill_id >= len(data["skill"]):
+            return jsonify({"message": "Resource doesn't exist"}), 404
+        else:
+            del data['skill'][skill_id]
+            return jsonify({"message": "Skill Successfully Deleted"}), 200
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
 @app.route('/resume/skill/<int:skill_id>', methods=['GET'])
 def get_skill(skill_id):
     '''
@@ -173,3 +186,4 @@ def get_skill(skill_id):
         return jsonify(data["skill"][skill_id].__dict__)
     except IndexError:
         return jsonify({"error": "Skill not found"}), 404
+
