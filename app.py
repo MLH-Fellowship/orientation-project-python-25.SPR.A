@@ -3,8 +3,10 @@ Flask Application
 '''
 
 from flask import Flask, jsonify, request
-
-from models import Education, Experience, Skill
+from models import Experience, Education, Skill
+from gpt_connection import get_improvement
+from validation import validate_experience, validate_education, validate_skill
+from spell_check import spell_check
 
 app = Flask(__name__)
 
@@ -20,14 +22,13 @@ data = {
         )
     ],
     "education": [
-        Education(
-            "Computer Science",
-            "University of Tech",
-            "September 2019",
-            "July 2022",
-            "80%",
-            "example-logo.png",
-        )
+        Education("Computer Science",
+                  "University of Tech",
+                  "September 2019",
+                  "July 2022",
+                  "80%",
+                  "example-logo.png",
+                  "I was head of the debate team at university")
     ],
     "skill": [Skill("Python", "1-2 Years", "example-logo.png")],
 }
@@ -40,20 +41,35 @@ def hello_world():
     '''
     return jsonify({"message": "Hello, World!"})
 
-
-@app.route("/resume/education", methods=["GET", "POST"])
-def education():
+@app.route('/resume/spell_check', methods=['POST'])
+def spell_check():
+    json_data = request.json
+    if json_data.get('description') and isinstance(json_data.get('description'), str):
+        json_data['description'] = spell_check(json_data['description'])
+    return jsonify({
+        "before": request.json,
+        "after": json_data
+    })
+  
+@app.route('/resume/reword_description', methods=['GET'])
+def reword_description():
     '''
-    Handles education requests
+    Rewords the description using GPT
     '''
-    if request.method == "GET":
-        return jsonify({})
+    model = None
+    try:
+        model = Experience(**request.json)
+    except:
+        model = Education(**request.json)
 
-    if request.method == "POST":
-        return jsonify({})
+    if model is None:
+        return jsonify({"error": "Invalid request"}), 400
 
-    return jsonify({})
-
+    response = get_improvement(model)
+    if response is None:
+        return jsonify({"error": "Failed to get improvement"}), 500
+    
+    return jsonify({"response": response})
 
 @app.route("/resume/skill", methods=["GET", "POST"])
 @app.route('/resume/skill/<int:skill_id>', methods=['DELETE'])
@@ -67,19 +83,15 @@ def skill(skill_id = None):
     if request.method == 'POST':
         json_data = request.json
         try:
-            # extract the data from the request
-            name = json_data["name"]
-            proficiency = json_data["proficiency"]
-            logo = json_data["logo"]
+            validated_data = validate_skill(json_data)
 
-            new_skill = Skill(name, proficiency, logo)
-
-            data["skill"].append(new_skill)
+            data["skill"].append(validated_data)
 
             # return ID of new skill
             return jsonify(
                 {"id": len(data["skill"]) - 1}
             ), 201
+
 
         except KeyError:
             return jsonify({"error": "Invalid request"}), 400
@@ -93,7 +105,8 @@ def skill(skill_id = None):
             else:   
                 del data['skill'][skill_id]
                 return jsonify({"message": "Skill Successfully Deleted"}), 200
-
+        except (ValueError, TypeError, KeyError) as e:
+            return jsonify({"error": f"Invalid request: {str(e)}"}), 400
         except Exception as e:      
             return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
